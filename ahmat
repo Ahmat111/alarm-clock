@@ -1,0 +1,83 @@
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Будильник на JavaScript</title>
+    <style>
+    
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 50px;
+            
+        }
+        input[type="time"] {
+            padding: 10px;
+            font-size: 16px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        #message {
+            margin-top: 20px;
+            font-size: 20px;
+            color:brown;
+        }
+    </style>
+</head>
+<body>
+    <h1>Будильник</h1>
+    <label for="alarmTime">Выберите время для будильника</label><br>
+    <input type="time" id="alarmTime">
+    <button id="setAlarm">Установить будильник</button>
+
+    <p id="message"></p>
+
+    <audio id="alarmSound" src="c:\Users\Admin\Downloads\gromkiy-krik-vzroslogo-petuha.mp3" preload="auto"></audio>
+
+    <script>
+        let alarmTimeout;
+
+        document.getElementById('setAlarm').addEventListener('click', function() {
+            const alarmTime = document.getElementById('alarmTime').value;
+            const message = document.getElementById('message');
+            const alarmSound = document.getElementById('alarmSound');
+
+            // Проверка на корректность времени
+            if (!alarmTime) {
+                message.textContent = 'Пожалуйста, выберите время!';
+                return;
+            }
+
+            // Уведомление о настройке будильника
+            message.textContent = `Будильник установлен на ${alarmTime}.`;
+            clearTimeout(alarmTimeout);
+
+            // Установка интервала для проверки времени
+            const alarmDate = new Date();
+            const [hours, minutes] = alarmTime.split(':');
+            alarmDate.setHours(hours);
+            alarmDate.setMinutes(minutes);
+            alarmDate.setSeconds(0);
+
+            const checkAlarm = () => {
+                const now = new Date();
+                if (now.getHours() === alarmDate.getHours() && now.getMinutes() === alarmDate.getMinutes()) {
+                    alarmSound.play();
+                    message.textContent = 'Время звонить!';
+                    clearTimeout(alarmTimeout);
+                } else {
+                    alarmTimeout = setTimeout(checkAlarm, 60000); // Проверять каждые 60 секунд
+                }
+            };
+
+            checkAlarm();
+        });
+    </script>
+    <img src="https://avatars.mds.yandex.net/i?id=cf9341eaaefeb6d7b85983d7cdc5ac6a6c3aea40-12925699-images-thumbs&n=13">
+
+</body>
+</html>
